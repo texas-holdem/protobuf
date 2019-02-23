@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package texasholdem;
+
+import public "base.proto";
+
+message BasePlayerInfo {
+    string player_id = 1;
+    string name = 2;
+    string avatar = 3;
+}
+
+message TablePlayerInfo {
+    BasePlayerInfo base_player_info = 1;
+    int32 seatId = 2;
+    int32 balance = 3;
+    uint32 buyin = 4;
+}
+
+message GameInfo {
+    string title = 1;
+    uint64 created_at = 2;
+    string created_by = 3;
+    uint32 duration = 4;
+    uint64 started_at = 5;
+    uint32 table_size = 6;
+    uint32 round_played = 7;
+}
+
+message TableInfo {
+    map<int32, TablePlayerInfo> table_players = 1;
+}
+
+message RoundInfo {
+    enum RoundPhase {
+        ROUND_PHASE_DEFAULT = 0;
+        STARTED = 1;
+        FORCE_BET_DONE = 2;
+        PLAYER_CARDS_DEALT = 3;
+        PRE_FLOP_BET_DONE = 4;
+        FLOP_CARDS_DEALT = 5;
+        FLOP_BET_DONE = 6;
+        TURN_CARD_DEALT = 7;
+        TURN_BET_DONE = 8;
+        RIVER_CARD_DEALT = 9;
+        RIVER_BET_DONE = 10;
+        ENDED = 11;
+    }
+
+    message ChipPile {
+        uint32 amount = 1;
+        repeated string player_ids = 2;
+    }
+
+    RoundPhase phase = 1;
+    repeated Card hand_cards = 2;
+    repeated Card community_cards = 3;
+    repeated ChipPile chip_piles = 4;
+    map<string, Bet> player_bets = 5;
+    string pending_bet_player = 6;
+}
+
+message PlayerJoinGameReq {
+    BasePlayerInfo base_player_info = 1;
+    bytes token = 2;
+}
+
+message PlayerJoinGameRes {
+    bool success = 1;
+    GameInfo game_info = 2;
+    TableInfo table_info = 3;
+    RoundInfo round_info = 4;
+}
+
+message PlayerJoinTableReq {
+    int32 seat_id = 1;
+    uint32 buy_in = 2;
+}
+
+message PlayerJoinTableRes {
+    bool success = 1;
+}
+
+message PlayerLeaveTableReq {
+    bool keep_seat = 1;
+}
+
+message PlayerLeaveTableRes {
+    bool ack = 1;
+}
+
+message BroadcastTableUpdate {
+    TableInfo table_info = 1;
+}
+
+message Ack {
+    bool ack = 1;
+}
+
+message PlayerBuyInReq {
+    uint32 buy_in = 1;
+}
+
+message PlayerBuyInRes {
+    bool success = 1;
+}
+
+message BroadcastGameStart {
+    uint64 started_at = 1;
+}
+
+message BroadcastRoundStart {
+    uint64 started_at = 1;
+    uint32 round_number = 2;
+}
+
+message BroadcastForcedBets {
+    map<string, Bet.BetType> forced_bets = 1;
+    string pending_bet_player = 2;
+}
+
+message DealPlayerCardsReq {
+    repeated Card cards = 1;
+}
+
+message PlayerBetReq {
+    Bet bet = 1;
+}
+
+message PlayerBetRes {
+    bool success = 1;
+}
+
+message BroadcastPlayerBet {
+    string player_id = 1;
+    Bet bet = 2;
+    string pending_bet_player = 3;
+}
+
+message BroadcastFlopCards {
+    repeated Card cards = 1;
+    string pending_bet_player = 2;
+}
+
+message BroadcastTurnCard {
+    Card card = 1;
+    string pending_bet_player = 2;
+}
+
+message BroadcastRiverCard {
+    Card card = 1;
+    string pending_bet_player = 2;
+}
+
+message BroadcastChipResults {
+    map<string, uint32> chips = 1;
+}
