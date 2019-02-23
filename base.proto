@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package texasholdem;
+
+enum Rank {
+    RANK_UNKNOWN = 0;
+    TWO = 1;
+    THREE = 2;
+    FOUR = 3;
+    FIVE = 4;
+    SIX = 5;
+    SEVEN = 6;
+    EIGHT = 7;
+    NINE = 8;
+    TEN = 9;
+    JACK = 10;
+    QUEEN = 11;
+    KING = 12;
+    ACE = 13;
+}
+
+enum Suit {
+    SUIT_UNKNOWN = 0;
+    SPADE = 1;
+    HEART = 2;
+    CLUB = 3;
+    DIAMOND = 4;
+}
+
+message Card {
+    Rank rank = 1;
+    Suit suit = 2;
+}
+
+message Score {
+
+    enum Category {
+        CATEGORY_UNKNOWN = 0;
+        HIGH_CARD = 1;
+        PAIR = 2;
+        TWO_PAIRS = 3;
+        THREE_OF_A_KIND = 4;
+        STRAIGHT = 5;
+        FLUSH = 6;
+        FULL_HOUSE = 7;
+        FOUR_OF_A_KIND = 8;
+        STRAIGHT_FLUSH = 9;
+        ROYAL_FLUSH = 10;
+    }
+
+    Category category = 1;
+    repeated Rank kicker = 2;
+}
+
+message Bet {
+    enum BetType {
+        BET_TYPE_DEFAULT = 0;
+        SMALL_BLIND = 1;
+        BIG_BLIND = 2;
+        ANTE = 3;
+        STRADDLE = 4;
+        MISSED_SMALL_BLIND = 5;
+        MISSED_BIG_BLIND = 6;
+        MISSED_ANTE = 7;
+    }
+
+    uint32 amount = 1;
+    BetType bet_type = 2;
+}
